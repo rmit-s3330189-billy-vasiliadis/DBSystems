@@ -20,8 +20,16 @@ public class dbload {
 			String line = input.readLine();
 			while((line = input.readLine()) != null) {
 				String[] record = line.split("\t");
-				printTokens(record);
-				
+				setSizeOfRecord(record);
+				if((noOfBytesRead + recordSize) > pageSize) {
+					noOfBytesRead = 0;
+					noOfPages++;
+					//write out a new line, then write out the record on the new page
+				} else {
+					noOfBytesRead += recordSize;
+					//write out the record
+				}
+				noOfRecords++;
 			}
 		} catch(Exception e) {
 			System.out.println(e);
@@ -29,9 +37,13 @@ public class dbload {
 		
 	}	
 	
-	public static void printTokens(String[] record) {
+	public static void setSizeOfRecord(String[] record) {
+		//I have decided to use a delimiter to seperate fields(,) and records(%), which totals nine delimiters per record
+		//Each character is equal to 1 byte, therefore the initial record size is 9 bytes	
+		recordSize = 9;
 		for(int i = 0 ; i < record.length ; i++) {
-			System.out.println(record[i]);
-		}	
+			//For now, I am considering every field as a String, therefore to get the number of bytes, just get the length
+			recordSize += record[i].length();		
+		}
 	}
 }
