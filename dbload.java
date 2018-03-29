@@ -7,7 +7,7 @@ public class dbload {
 	public static void main(String[] args) {
 		int pageSize = 4096;
 		int noOfBytesRead = 0;
-		int noOfPages = 0;
+		int noOfPages = 1;
 		int noOfRecords = 0;
 	
 		BufferedReader input = null;
@@ -15,22 +15,27 @@ public class dbload {
 
 		try{
 			input = new BufferedReader(new FileReader("test.csv"));
-			output = new DataOutputStream(new FileOutputStream("result.txt")); 
+			output = new DataOutputStream(new FileOutputStream("result.dat")); 
 			//we ignore the first line which is the schema, we don't want to write this to the heap file
 			String line = input.readLine();
 			while((line = input.readLine()) != null) {
 				String[] record = line.split("\t");
 				setSizeOfRecord(record);
 				if((noOfBytesRead + recordSize) > pageSize) {
-					noOfBytesRead = 0;
+					noOfBytesRead = recordSize;
 					noOfPages++;
 					//write out a new line, then write out the record on the new page
+					output.write(10);
+					writeOutRecord(record, output);
+					
 				} else {
 					noOfBytesRead += recordSize;
-					//write out the record
+					writeOutRecord(record, output);
 				}
 				noOfRecords++;
 			}
+			System.out.println("Number of pages written: " + noOfPages);
+			System.out.println("Number of records written: " + noOfRecords);
 		} catch(Exception e) {
 			System.out.println(e);
 		}
@@ -43,7 +48,24 @@ public class dbload {
 		recordSize = 9;
 		for(int i = 0 ; i < record.length ; i++) {
 			//For now, I am considering every field as a String, therefore to get the number of bytes, just get the length
-			recordSize += record[i].length();		
+			recordSize += record[i].length();
+		}
+	}
+
+	public static void writeOutRecord(String[] record, DataOutputStream output) {
+		try {
+			byte[] data;
+			int i;
+			for(i = 0 ; i < record.length-1 ; i++) {
+				data = record[i].getBytes();
+				output.write(data);
+				output.write(44);
+			}
+			data = record[i++].getBytes();
+			output.write(data);
+			output.write(37);
+		} catch(Exception e) {
+			System.out.println(e);
 		}
 	}
 }
