@@ -5,7 +5,8 @@ public class dbload {
 	static int recordSize;
 
 	public static void main(String[] args) {
-		int pageSize = 4096;
+		int pageSize = Integer.parseInt(args[1]);
+		String datafile = args[2];
 		int noOfBytesRead = 0;
 		int noOfPages = 1;
 		int noOfRecords = 0;
@@ -14,8 +15,8 @@ public class dbload {
 		DataOutputStream output = null;
 
 		try{
-			input = new BufferedReader(new FileReader("test.csv"));
-			output = new DataOutputStream(new FileOutputStream("result.dat")); 
+			input = new BufferedReader(new FileReader(datafile));
+			output = new DataOutputStream(new FileOutputStream("heap." + pageSize + ".dat")); 
 			//we ignore the first line which is the schema, we don't want to write this to the heap file
 			String line = input.readLine();
 			while((line = input.readLine()) != null) {
