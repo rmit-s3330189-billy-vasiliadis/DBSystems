@@ -20,7 +20,8 @@ public class dbload {
 
 		try{
 			input = new BufferedReader(new FileReader(datafile));
-			output = new DataOutputStream(new FileOutputStream("heap." + pageSize + ".dat")); 
+			output = new DataOutputStream(new FileOutputStream("heap." + pageSize + ".dat"));
+			long startTime = System.currentTimeMillis(); 
 			//we ignore the first line which is the schema, we don't want to write this to the heap file
 			String line = input.readLine();
 			while((line = input.readLine()) != null) {
@@ -39,8 +40,10 @@ public class dbload {
 				}
 				noOfRecords++;
 			}
+			long endTime = System.currentTimeMillis();
 			System.out.println("Number of pages written: " + noOfPages);
 			System.out.println("Number of records written: " + noOfRecords);
+			System.out.println("Milliseconds taken: " + (endTime - startTime));
 		} catch(Exception e) {
 			System.out.println(e);
 		}

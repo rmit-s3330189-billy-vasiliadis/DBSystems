@@ -18,6 +18,7 @@ public class dbquery {
 			String record = "";			
 			int c = 0;
 			System.out.println("Records found: ");
+			long startTime = System.currentTimeMillis();
 			while(c != -1) {
 				while((c = input.read()) != 37 && c != -1 && c != 10) {
 					record += (char)c;
@@ -27,6 +28,8 @@ public class dbquery {
 				}
 				record="";
 			}
+			long endTime = System.currentTimeMillis();
+			System.out.println("\nMilliseconds Taken: " + (endTime - startTime));
 		} catch(Exception e){
 			System.out.println(e);
 		}
