@@ -5,6 +5,10 @@ public class dbload {
 	static int recordSize;
 
 	public static void main(String[] args) {
+		if(args.length < 3) {
+			System.out.println("Please provide arguments in this format: -p <pagesize> <datafile>");
+			System.exit(0);
+		}
 		int pageSize = Integer.parseInt(args[1]);
 		String datafile = args[2];
 		int noOfBytesRead = 0;
